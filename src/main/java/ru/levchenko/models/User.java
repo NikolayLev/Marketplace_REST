@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import javax.validation.constraints.Pattern;
-
+import java.util.List;
 
 /**
  * User pojo mapping via Hibernate
@@ -26,8 +26,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "login", nullable = false)
+    //@Pattern(regexp = "[a-zA-Z0-9]{4,16}", message = "от 4 до 16 символов(латиница/цифры)")
     private String login;
-    @Column(name = "hashPassword", nullable = false)
+    @Transient
+    //@Pattern(regexp = "[a-zA-Z0-9.]{8,16}", message ="от 8 до 16 символов(латиница/цифры/знаки)")
+    private String password;
+    @Column(name = "hash_password", nullable = false)
     private String hashPassword;
     @Column(name = "first_name")
     private String firstName;
@@ -36,6 +40,8 @@ public class User {
     @Column(name = "uploadphoto")
     private String uploadPhoto;//путь к аватару юзера(скинуть в отдельную СУБД все файлы)
     @Column(nullable = false)
+    //@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",
+            //message ="укажите действующий емейл")
     private String email;
     @Column
     private String activationCode;
@@ -48,6 +54,8 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private State state;
 
+    @OneToMany(mappedBy = "owner")
+    private List<Product> productList;
 
     public boolean isAdmin(){
         if (getRole().name().equals(Role.ADMIN.name())){
@@ -55,6 +63,9 @@ public class User {
         }
         return false;
     }
+
+    @OneToMany(mappedBy = "user")
+    List<Token> tokens;
 
 
 }
