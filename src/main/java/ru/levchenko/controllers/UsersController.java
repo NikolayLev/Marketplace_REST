@@ -7,11 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.levchenko.forms.UserForm;
 import ru.levchenko.models.User;
+import ru.levchenko.models.dto.UserDto;
 import ru.levchenko.repositories.UsersRepository;
 
 import ru.levchenko.services.SignUpService;
 
 import java.util.List;
+
+import static ru.levchenko.models.dto.UserDto.from;
 
 @RestController
 public class UsersController {
@@ -23,8 +26,8 @@ public class UsersController {
 
 
     @GetMapping("users")
-    public List<User> getUsers(){
-        return usersRepository.findAll();
+    public List<UserDto> getUsers(){
+        return from(usersRepository.findAll());
     }
     @GetMapping("users/{user-id}")
     public User getUser(@PathVariable("user-id") Long id){
